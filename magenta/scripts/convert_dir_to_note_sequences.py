@@ -29,6 +29,7 @@ import os
 from note_seq import abc_parser
 from note_seq import midi_io
 from note_seq import musicxml_reader
+import pretty_midi
 import tensorflow.compat.v1 as tf
 
 FLAGS = tf.app.flags.FLAGS
@@ -43,6 +44,8 @@ tf.app.flags.DEFINE_bool('recursive', False,
 tf.app.flags.DEFINE_string('log', 'INFO',
                            'The threshold for what messages will be logged '
                            'DEBUG, INFO, WARN, ERROR, or FATAL.')
+tf.app.flags.DEFINE_float('max_tick', 1e7,
+                          'Modify the value of pretty_midi.MAX_TICK.')
 
 
 def generate_note_sequence_id(filename, collection_name, source_type):
@@ -237,6 +240,7 @@ def convert_directory(root_dir, output_file, recursive=False):
 
 def main(unused_argv):
   tf.logging.set_verbosity(FLAGS.log)
+  pretty_midi.pretty_midi.MAX_TICK = FLAGS.max_tick
 
   if not FLAGS.input_dir:
     tf.logging.fatal('--input_dir required')
